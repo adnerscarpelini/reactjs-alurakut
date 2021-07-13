@@ -1,42 +1,33 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
+import { AlurakutStyles } from '../src/lib/AlurakutCommons';
 
 const GlobalStyle = createGlobalStyle`
-
-  //Reset CSS para navegadores antigos
+  /* Reset CSS (Necolas Reset CSS <3) */
   * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box
-  }
-
-
-  body {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
-    background-color: #D9E6F6
   }
-
-  /* A tag Next é a inicial gerada automaticamente */
+  body {
+    font-family: sans-serif;
+    background-color: #D9E6F6;
+  }
   #__next {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
   }
-
-  /* Reset para deixar imagens responsivas por padrão */
-  img{
+  img { //Deixa todas as imagens responsivas
     max-width: 100%;
     height: auto;
     display: block;
   }
-
+  ${AlurakutStyles}
 `
 
 const theme = {
   colors: {
-    primary: '#0070f3',
+    primary: 'red',
   },
 }
 

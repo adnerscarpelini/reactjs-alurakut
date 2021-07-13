@@ -1,3 +1,7 @@
+//Adner - Essa lib foi criada pela Alura
+//Ela é a coluna lateral que fica em baixo da foto do perfil
+
+
 import React from 'react';
 import styled, { css } from 'styled-components';
 import NextLink from 'next/link';
