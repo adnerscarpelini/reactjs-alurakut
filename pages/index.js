@@ -25,6 +25,31 @@ function ProfileSidebar(propriedades) {
   )
 }
 
+//Componente para retornar os dados dentro das caixinhas brancas de seguidores, comunidades...
+function ProfileRelationsBox(propriedades) {
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {propriedades.title} ({propriedades.items.length})
+      </h2>
+
+      <ul>
+        {/* O slice limita em 6 registros */}
+        {propriedades.items.slice(0, 6).map((itemAtual) => {
+           return (
+            <li key={itemAtual.url}>
+              <a href={itemAtual.html_url} key={itemAtual.id}>
+                <img src={itemAtual.avatar_url} />
+                <span>{itemAtual.login}</span>
+              </a>
+            </li>
+          )
+         })}
+      </ul>
+    </ProfileRelationsBoxWrapper>
+  );
+}
+
 export default function Home() {
 
   //Gerenciador de Estados da variavel comunidade
@@ -47,6 +72,26 @@ export default function Home() {
     'felipefialho'
   ]
 
+  //0 - Pegar o array de dados do github - Uso do Paulo Silveira, pois meu usuario nao tem seguidores =(
+  //O comando fetch é um comando padrão dos navegadores para pegar dados de uma API. Ele retorna uma Promise, que retorna aos poucos as informações, pedaço por pedaço.
+  // O useEffect é um Hook que serve para lidar com os efeitos. Podemos usá-los como os lifeCycles componentDidMount, componentDidUpdate e componentWillUnmount.
+  // O useEffect() recebe como primeiro parâmetro uma função que será executada assim que o componente renderizar. 
+  // De forma resumida: ele executa sempre que algo é atualizado
+  const [seguidores, setSeguidores] = React.useState([]);
+  React.useEffect(function () {
+    fetch('https://api.github.com/users/peas/followers')
+      .then(function (respostaDoServidor) {
+        return respostaDoServidor.json();
+      })
+      .then(function (respostaCompleta) {
+        //Quando termina a promise atualiza a variavel com o array
+        setSeguidores(respostaCompleta);
+      })
+    //O vertor abaixo indica para quais variaveis ele deve olhar quando for alterada
+    //Ai ele executa novamente. Se não passar esse parâmetro, sempre que tiver algum evendo ele vai rodar
+  }, [])
+
+  //1 - Criar um box que vai ter um map baseado nos itens do array do github
   return (
     <>
       <AlurakutMenu />
@@ -106,8 +151,13 @@ export default function Home() {
           </Box>
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
+
+          {/* ::: SEGUIDORES ::: */}
+          <ProfileRelationsBox title="Seguidores" items={seguidores} />
+
+          {/* ::: COMUNIDADES ::: */}
           <ProfileRelationsBoxWrapper>
-          <h2 className="smallTitle">
+            <h2 className="smallTitle">
               Comunidades ({comunidades.length})
             </h2>
 
@@ -126,6 +176,7 @@ export default function Home() {
           </ProfileRelationsBoxWrapper>
 
 
+          {/* ::: PESSOAS DA COMUNIDADE ::: */}
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Pessoas da comunidade ({pessoasFavoritas.length})
