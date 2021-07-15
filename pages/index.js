@@ -140,14 +140,31 @@ export default function Home() {
 
               //Adiciona os itens no array da comunidade
               const comunidade = {
-                id: new Date().toISOString(),
                 title: dadosDoForm.get('title'),
-                image: dadosDoForm.get('image')
+                imageUrl: dadosDoForm.get('image')
               }
 
-              //Faz um Spread dos itens atuais mais o novo
-              const comunidadesAtualizadas = [...comunidades, comunidade];
-              setComunidades(comunidadesAtualizadas);
+              //Chamar a API interna nossa, que roda num servidor node.
+              //Nela está salva o Token de acesso ao DatoCMS, la que cria o registro
+              fetch('/api/comunidades', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                },
+                body: JSON.stringify(comunidade)
+              })
+                .then(async (response) => {
+                  const dados = await response.json();
+                  //console.log(dados.registroCriado);
+                  const comunidade = dados.registroCriado;
+
+                  //Faz um Spread dos itens atuais mais o novo
+                  const comunidadesAtualizadas = [...comunidades, comunidade];
+                  setComunidades(comunidadesAtualizadas);
+                });
+
+
 
             }}>
               <div>
