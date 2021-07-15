@@ -36,7 +36,7 @@ function ProfileRelationsBox(propriedades) {
       <ul>
         {/* O slice limita em 6 registros */}
         {propriedades.items.slice(0, 6).map((itemAtual) => {
-           return (
+          return (
             <li key={itemAtual.url}>
               <a href={itemAtual.html_url} key={itemAtual.id}>
                 <img src={itemAtual.avatar_url} />
@@ -44,7 +44,7 @@ function ProfileRelationsBox(propriedades) {
               </a>
             </li>
           )
-         })}
+        })}
       </ul>
     </ProfileRelationsBoxWrapper>
   );
@@ -53,13 +53,7 @@ function ProfileRelationsBox(propriedades) {
 export default function Home() {
 
   //Gerenciador de Estados da variavel comunidade
-  const [comunidades, setComunidades] = React.useState([
-    {
-      id: '1',
-      title: 'Eu odeio acordar cedo',
-      image: 'http://alurakut.vercel.app/capa-comunidade-01.jpg'
-    }
-  ]);
+  const [comunidades, setComunidades] = React.useState([]);
 
   const usuarioAleatorio = 'adnerscarpelini';
   //Usuarios amigos
@@ -79,7 +73,9 @@ export default function Home() {
   // De forma resumida: ele executa sempre que algo é atualizado
   const [seguidores, setSeguidores] = React.useState([]);
   React.useEffect(function () {
-    fetch('https://api.github.com/users/peas/followers')
+
+    //::: Consultar os seguidores do usuário no GitHub ::://
+    fetch('https://api.github.com/users/peas/followers') //GET
       .then(function (respostaDoServidor) {
         return respostaDoServidor.json();
       })
@@ -87,6 +83,32 @@ export default function Home() {
         //Quando termina a promise atualiza a variavel com o array
         setSeguidores(respostaCompleta);
       })
+
+
+    //::: Consultar as comunidades no DatoCMS ::://
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'a6834c449c0d3b7c5a4e2b5d505000',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        "query": `query {
+        allCommunities {
+          id
+          title
+          imageUrl
+        }
+      }`})
+    })
+      .then((response) => response.json()) //Pega o retorno e converte pra json
+      .then((respostaCompleta) => {
+        //console.log(respostaCompleta);
+        const comunidadesRetornoDato = respostaCompleta.data.allCommunities;
+        setComunidades(comunidadesRetornoDato);
+      })
+
     //O vertor abaixo indica para quais variaveis ele deve olhar quando for alterada
     //Ai ele executa novamente. Se não passar esse parâmetro, sempre que tiver algum evendo ele vai rodar
   }, [])
@@ -165,8 +187,8 @@ export default function Home() {
               {comunidades.map((itemAtual) => {
                 return (
                   <li key={itemAtual.id}>
-                    <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
-                      <img src={itemAtual.image} />
+                    <a href={`/comunities/${itemAtual.id}`} key={itemAtual.title}>
+                      <img src={itemAtual.imageUrl} />
                       <span>{itemAtual.title}</span>
                     </a>
                   </li>
