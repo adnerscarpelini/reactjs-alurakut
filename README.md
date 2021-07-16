@@ -2,6 +2,8 @@
 Alura trainning.
 A ReactJS Orkut clone.
 
+[![Demo](https://raw.githubusercontent.com/adnerscarpelini/reactjs-alurakut/main/src/ImagensConclusao/Demo.gif "Demo")](http://https://raw.githubusercontent.com/adnerscarpelini/reactjs-alurakut/main/src/ImagensConclusao/Demo.gif "Demo")
+
 
 ### 🚀 Technologies
 
