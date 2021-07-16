@@ -1,4 +1,6 @@
 import React from 'react'
+import nookies from 'nookies'; //Trabalhar com cookies
+import jwt from 'jsonwebtoken'; //Decodificar token
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
@@ -58,11 +60,11 @@ export default function Home() {
   const usuarioAleatorio = 'adnerscarpelini';
   //Usuarios amigos
   const pessoasFavoritas = [
-    'omariosouto',
+    'adnerscarpelini',
     'juunegreiros',
     'peas',
     'rafaballerini',
-    'marcobrunodev',
+    'filipedeschamps',
     'felipefialho'
   ]
 
@@ -238,4 +240,35 @@ export default function Home() {
       </MainGrid>
     </>
   )
+}
+
+
+
+//Função para validar se o token salvo no cookies da tela de login é valido
+export async function getServerSideProps(context) {
+  console.log('Chegou na getServerSideProps')
+  const cookies = nookies.get(context)
+  const token = cookies.USER_TOKEN;
+  const { isAuthenticated } = await fetch('https://alurakut.vercel.app/api/auth', {
+    headers: {
+        Authorization: token
+      }
+  })
+  .then((resposta) => resposta.json())
+
+  if(!isAuthenticated) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+
+  const { githubUser } = jwt.decode(token);
+  return {
+    props: {
+      githubUser
+    }, // will be passed to the page component as props
+  }
 }
